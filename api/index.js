@@ -15,7 +15,7 @@ mongoose
     console.log(err);
   });
 app.get("/", (req, res) => {
-  res.json({ name: "Vasanth" });
+  res.json({ name: "Vasanth " });
 });
 
 app.listen(5000, () => {
