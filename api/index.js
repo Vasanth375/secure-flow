@@ -6,7 +6,7 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 const URI = process.env.MONGO;
-console.log(URI);
+// console.log(URI);
 mongoose
   .connect(URI)
   .then(() => {

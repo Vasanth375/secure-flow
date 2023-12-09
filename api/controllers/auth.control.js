@@ -1,11 +1,12 @@
 const User = require("../models/user.model");
+const bcryptjs = require("bcryptjs");
 
-const authRoutes = async (req, res) => {
+const signup = async (req, res) => {
   const { username, email, password } = req.body;
   const newUser = new User({
     username: username,
     email: email,
-    password: password,
+    password: bcryptjs.hashSync(password, 10),
   });
   try {
     await newUser.save();
@@ -15,4 +16,11 @@ const authRoutes = async (req, res) => {
   }
 };
 
-module.exports = authRoutes;
+const signin = (req, res) => {
+  console.log(req.body);
+  res.json({
+    messaage: "signin",
+  });
+};
+
+module.exports = { signup, signin };
