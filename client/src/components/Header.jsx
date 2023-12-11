@@ -1,14 +1,13 @@
-import React from "react";
 import { Link } from "react-router-dom";
 
 export default function Header() {
   return (
-    <div className="bg-slate-300">
-      <div className="flex items-center justify-between p-3.5 mx-auto max-w-5xl">
+    <div className=" bg-slate-300">
+      <div className="flex items-center justify-between p-3.5 mx-auto max-w-5xl gap-2">
         <Link to={"/"}>
-          <h1 className="font-bold">MERN App</h1>
+          <h1 className="font-semibold">MERN App</h1>
         </Link>
-        <ul className="flex gap-6">
+        <ul className="flex gap-6 font-mono">
           <Link to={"/"}>
             <li>Home</li>
           </Link>
