@@ -1,13 +1,13 @@
 const express = require("express");
+const bodyParser = require("body-parser"); // To parse JSON data in the request body
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
-app.use(cors());
-
 dotenv.config();
 
 const app = express();
-app.use(express.json());
+app.use(bodyParser.json());
+app.use(cors());
 const URI = process.env.MONGO;
 // console.log(URI);
 mongoose

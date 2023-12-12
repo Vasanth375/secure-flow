@@ -3,33 +3,38 @@ import { Link } from "react-router-dom";
 
 export default function SignUp() {
   const [formData, setForm] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [Error, setError] = useState(false);
   const handleChange = (e) => {
     setForm({ ...formData, [e.target.id]: e.target.value });
     console.log(formData);
   };
   const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      e.preventDefault();
-      const responce = await fetch("/api/auth/signup", {
+      setLoading(true);
+      const response = await fetch("/api/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
-      })
-        .then(() => {
-          console.log("Sent");
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-      const data = await responce.json();
-      console.log(data);
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+
+      console.log("Sent");
+
+      const data = response.json ? await response.json() : null;
+      setLoading(false);
+      setError(false);
     } catch (error) {
-      console.log(error);
+      setLoading(false);
+      setError(true);
     }
   };
-
   return (
     <div className="max-w-lg p-3 mx-auto min-w-max">
       <div className="font-mono text-3xl text-center my-7">Signup</div>
@@ -60,20 +65,22 @@ export default function SignUp() {
         <button
           className="p-2 text-gray-100 uppercase rounded-md bg-slate-800 hover:bg-slate-900"
           type="submit"
-          onSubmit={handleSubmit}
+          onClick={handleSubmit}
+          disabled={loading}
         >
-          Signup
-        </button>
-        <button className="p-2 text-gray-100 uppercase bg-red-600 rounded-md hover:bg-red-800">
-          continue with google
+          {loading ? "Loading..." : "Signup"}
         </button>
       </form>
+      <button className="p-2 text-gray-100 uppercase bg-red-600 rounded-md hover:bg-red-800">
+        continue with google
+      </button>
       <div className="flex gap-2">
         <p>Have an account?</p>
         <Link to={"/signin"}>
           <span className="text-cyan-700">signin</span>
         </Link>
       </div>
+      <p className="mt-2 text-red-800">{Error ? "Something Went Wrong" : ""}</p>
     </div>
   );
 }
