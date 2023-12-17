@@ -15,6 +15,13 @@ export default function SignIn() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "User-Agent": "PostmanRuntime/7.36.0",
+          Accept: "/",
+          "Postman-Token": "cd6922da-29a0-4347-ad24-fe8ce581d678",
+
+          "Accept-Encoding": "gzip, deflate, br",
+          Connection: "keep-alive",
+          "Content-Length": 57,
         },
         body: JSON.stringify(form),
       });
