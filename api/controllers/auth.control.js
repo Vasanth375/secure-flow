@@ -25,13 +25,13 @@ const signin = async (req, res) => {
   try {
     const validUser = await User.findOne({ username: username });
     if (!validUser) {
-      console.log("User not found!");
-      return res.status(404).json({ messaage: "User not Found!" });
+      console.log("Nodejs: User not found!");
+      return res.status(404).json({ message: "User not Found!", status: 404 });
     }
 
     const validPass = bcryptjs.compareSync(password, validUser.password);
     if (!validPass) {
-      return res.status(401).json({ messaage: "Wrong Details!" });
+      return res.status(401).json({ message: "Wrong Details!", status: 401 });
     }
 
     // seperating the password from the object

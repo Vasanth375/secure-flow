@@ -1,24 +1,32 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../redux/User/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function SignIn() {
-  // console.log("Signin");
   const [form, setForm] = useState([]);
+  const { loading, error } = useSelector((state) => state.user);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleChange = (e) => {
     setForm({ ...form, [e.target.id]: e.target.value });
-    // console.log(form);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      dispatch(signInStart());
       const resp = await fetch("/api/auth/signin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "User-Agent": "PostmanRuntime/7.36.0",
           Accept: "/",
-          "Postman-Token": "cd6922da-29a0-4347-ad24-fe8ce581d678",
-
           "Accept-Encoding": "gzip, deflate, br",
           Connection: "keep-alive",
           "Content-Length": 57,
@@ -26,14 +34,19 @@ export default function SignIn() {
         body: JSON.stringify(form),
       });
 
-      if (!resp.ok) {
-        throw new Error(`Request failed with status ${resp.status}`);
+      // if (!resp.ok) {
+      //   throw new error(`Request failed with status ${resp.status}`);
+      // }
+      // console.log("signin");
+      const data = await resp.json();
+      if (data.status === 404 || data.status === 401) {
+        dispatch(signInFailure(data));
+        return;
       }
-      console.log("signin");
-      const data = resp.json ? await resp.json() : null;
-      console.log(data);
+      dispatch(signInSuccess(data));
+      navigate("/");
     } catch (error) {
-      console.log(error);
+      dispatch(signInFailure(error));
     }
   };
   return (
@@ -57,10 +70,20 @@ export default function SignIn() {
           type="submit"
           className="p-2 text-gray-100 uppercase bg-red-600 rounded-md"
           onClick={handleSubmit}
+          disabled={loading}
         >
-          Sign in
+          {loading ? "Loading..." : "Sign in"}
         </button>
       </form>
+      <div className="flex gap-2">
+        <p>Already have an Account</p>
+        <Link to={"/signup"}>
+          <span className="text-cyan-700">signup</span>
+        </Link>
+      </div>
+      <p className="mt-2 text-red-900">
+        {error ? error.message || "Something Went Wrong!!" : ""}
+      </p>
     </div>
   );
 }
