@@ -1,11 +1,19 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-
+import Oauth from "../components/Oauth";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signUpStart,
+  signUpSuccess,
+  signUpFailure,
+} from "../redux/User/userSlice";
 export default function SignUp() {
   const [formData, setForm] = useState([]);
   const [loading, setLoading] = useState(false);
   const [Error, setError] = useState(false);
+  const dispatch = useDispatch();
+  const { load, error, currentUser } = useSelector((state) => state.user);
   const handleChange = (e) => {
     setForm({ ...formData, [e.target.id]: e.target.value });
     // console.log(formData);
@@ -13,7 +21,8 @@ export default function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setLoading(true);
+      // setLoading(true);
+      dispatch(signUpStart());
       const response = await fetch("/api/auth/signup", {
         method: "POST",
         headers: {
@@ -22,18 +31,27 @@ export default function SignUp() {
         body: JSON.stringify(formData),
       });
 
-      if (!response.ok) {
-        throw new Error(`Request failed with status ${response.status}`);
-      }
+      // if (!response.ok) {
+      //   throw new Error(`Request failed with status ${response.status}`);
+      // }
 
       console.log("Sent");
-
-      const data = response.json ? await response.json() : null;
-      setLoading(false);
-      setError(false);
+      console.log(load);
+      // const data = response.json ? await response.json() : null;
+      // setLoading(false);
+      // setError(false);
+      const data = await response.json();
+      if (data.status === 500) {
+        dispatch(signUpFailure(data));
+        return;
+      }
+      if (data.status == 200) {
+        dispatch(signUpSuccess(data));
+      }
     } catch (error) {
-      setLoading(false);
-      setError(true);
+      // setLoading(false);
+      // setError(true);
+      dispatch(signUpFailure(error));
     }
   };
   return (
@@ -64,7 +82,7 @@ export default function SignUp() {
           required
         ></input>
         <button
-          className="p-2 text-gray-100 uppercase rounded-md bg-slate-800 hover:bg-slate-900"
+          className="p-2 text-gray-100 uppercase bg-red-600 rounded-md hover:bg-slate-900"
           type="submit"
           onClick={handleSubmit}
           disabled={loading}
@@ -72,16 +90,18 @@ export default function SignUp() {
           {loading ? "Loading..." : "Signup"}
         </button>
       </form>
-      <button className="p-2 text-gray-100 uppercase bg-red-600 rounded-md hover:bg-red-800">
-        continue with google
-      </button>
+      <div className="flex flex-col my-4">
+        <Oauth></Oauth>
+      </div>
       <div className="flex gap-2">
         <p>Have an account?</p>
         <Link to={"/signin"}>
           <span className="text-cyan-700">signin</span>
         </Link>
       </div>
-      <p className="mt-2 text-red-800">{Error ? "Something Went Wrong" : ""}</p>
+      <p className="mt-2 text-red-900">
+        {currentUser ? currentUser.message || "Something Went Wrong!!" : ""}
+      </p>
     </div>
   );
 }

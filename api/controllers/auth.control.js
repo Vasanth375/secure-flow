@@ -13,9 +13,12 @@ const signup = async (req, res) => {
   try {
     console.log("User Inserted!");
     await newUser.save();
-    res.status(200).json({ message: "User Inserted" });
+    res
+      .status(200)
+      .json({ message: "Successfully Account Created!", status: 200 });
   } catch (error) {
-    res.status(500).json({ message: "Error Occured" });
+    console.log(error);
+    res.status(500).json({ message: "Already Account Created!", status: 500 });
   }
 };
 
@@ -54,4 +57,51 @@ const signin = async (req, res) => {
   }
 };
 
-module.exports = { signup, signin };
+const google = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ username: req.body.email });
+    if (user) {
+      // creating the jwt token with unique id of mongodb _id created when user created account
+      const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
+
+      // seperating the password from the object
+      const { password: hashedPassword, ...rest } = user._doc;
+
+      // adding expiry time to the JWT token
+      const expiryTime = new Date(Date.now() * 3600000);
+
+      // jwt token stored in the browser cookie storage
+      res
+        .cookie("jwt_token", token, { httpOnly: true, expiryTime: expiryTime })
+        .status(200)
+        .json(rest);
+    } else {
+      const generatedPassword =
+        Math.random().toString(36).slice(-8) +
+        Math.random().toString(36).slice(-8);
+      const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
+      const newUser = new User({
+        username:
+          req.body.name.split(" ").join("").toLowerCase() +
+          Math.floor(Math.random() * 10000).toString(),
+        email: req.body.email,
+        password: hashedPassword,
+        profilePic: req.body.photo,
+      });
+      await newUser.save();
+
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+      const expiryTime = new Date(Date.now() * 3600000);
+      const { password: hashedPassword2, ...rest } = newUser._doc;
+      // jwt token stored in the browser cookie storage
+      res
+        .cookie("jwt_token", token, { httpOnly: true, expiryTime: expiryTime })
+        .status(200)
+        .json(rest);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { signup, signin, google };
