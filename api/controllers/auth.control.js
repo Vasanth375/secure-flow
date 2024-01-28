@@ -41,7 +41,7 @@ const signin = async (req, res) => {
     const { password: hashedPassword, ...rest } = validUser._doc;
 
     // adding expiry time to the JWT token
-    const expiryTime = new Date(Date.now() * 3600000);
+    const expiryTime = new Date(Date.now() * 36);
 
     // creating the jwt token with unique id of mongodb _id created when user created account
     const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
@@ -53,7 +53,7 @@ const signin = async (req, res) => {
       .json(rest);
   } catch (error) {
     console.log("Error");
-    res.status(500).json({ message: "Internal Sever Error!" });
+    res.status(500).json({ message: "Internal Sever Error!", status:500 });
   }
 };
 

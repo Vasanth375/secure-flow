@@ -1,0 +1,24 @@
+* html {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Open Sans", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.main {
+  height: 100vh;
+  background-color: #757086;
+  background-image: radial-gradient(
+      at 0% 0%,
+      rgb(184, 182, 192) 0,
+      transparent 50%
+    ),
+    radial-gradient(at 50% 0%, rgb(255, 255, 255) 0, transparent 50%),
+    radial-gradient(at 100% 0%, rgb(119, 57, 78) 0, transparent 50%);
+}

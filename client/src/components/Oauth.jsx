@@ -28,11 +28,12 @@ export default function Oauth() {
           photo: result.user.photoURL,
         }),
       });
-
+      
       const data = await res.json();
       dispatch(signInSuccess(data));
     } catch (error) {
       console.log(error);
+      dispatch(signInFailure(error));
     }
   };
 
@@ -41,7 +42,7 @@ export default function Oauth() {
       type="button"
       className="p-2 text-gray-100 uppercase bg-red-600 rounded-md hover:bg-red-800 hover:text-gray-50"
       onClick={handleSubmit}
-    > 
+    >
       Continue with google
     </button>
   );

@@ -31,15 +31,8 @@ export default function SignUp() {
         body: JSON.stringify(formData),
       });
 
-      // if (!response.ok) {
-      //   throw new Error(`Request failed with status ${response.status}`);
-      // }
-
       console.log("Sent");
       console.log(load);
-      // const data = response.json ? await response.json() : null;
-      // setLoading(false);
-      // setError(false);
       const data = await response.json();
       if (data.status === 500) {
         dispatch(signUpFailure(data));
@@ -56,7 +49,7 @@ export default function SignUp() {
   };
   return (
     <div className="max-w-lg p-3 mx-auto min-w-max">
-      <div className="font-mono text-3xl text-center my-7">Signup</div>
+      <div className="font-mono text-3xl text-center my-7">SignUp</div>
       <form className="flex flex-col gap-4">
         <input
           className="justify-center p-2 rounded-md bg-slate-100"
@@ -82,7 +75,7 @@ export default function SignUp() {
           required
         ></input>
         <button
-          className="p-2 text-gray-100 uppercase bg-red-600 rounded-md hover:bg-slate-900"
+          className="p-2 text-gray-100 uppercase bg-red-600 rounded-md hover:bg-red-800"
           type="submit"
           onClick={handleSubmit}
           disabled={loading}
@@ -93,10 +86,10 @@ export default function SignUp() {
       <div className="flex flex-col my-4">
         <Oauth></Oauth>
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-2 text-slate-100">
         <p>Have an account?</p>
         <Link to={"/signin"}>
-          <span className="text-cyan-700">signin</span>
+          <span className="text-cyan-300 hover:text-white">signin</span>
         </Link>
       </div>
       <p className="mt-2 text-red-900">

@@ -40,7 +40,7 @@ export default function SignIn() {
       // }
       // console.log("signin");
       const data = await resp.json();
-      if (data.status === 404 || data.status === 401) {
+      if (data.status === 404 || data.status === 401 || data.status === 500) {
         dispatch(signInFailure(data));
         return;
       }
@@ -52,7 +52,9 @@ export default function SignIn() {
   };
   return (
     <div className="max-w-lg p-3 mx-auto min-w-max">
-      <div className="font-mono text-3xl text-center my-7">Sign in</div>
+      <div className="font-mono text-3xl text-center my-7 text-slate-900">
+        SignIn
+      </div>
       <form action="" className="flex flex-col gap-4">
         <input
           id="username"
@@ -75,10 +77,10 @@ export default function SignIn() {
         >
           {loading ? "Loading..." : "Sign in"}
         </button>
-        
+
         <Oauth></Oauth>
       </form>
-      <div className="flex gap-2">
+      <div className="flex gap-2 text-slate-50">
         <p>Already have an Account</p>
         <Link to={"/signup"}>
           <span className="text-cyan-700">signup</span>
