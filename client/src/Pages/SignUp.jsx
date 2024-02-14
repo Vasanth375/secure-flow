@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Oauth from "../components/Oauth";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -10,10 +10,12 @@ import {
 } from "../redux/User/userSlice";
 export default function SignUp() {
   const [formData, setForm] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [Error, setError] = useState(false);
+  
   const dispatch = useDispatch();
-  const { load, error, currentUser } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+  
+  const { loading, error, currentUser } = useSelector((state) => state.user);
+  
   const handleChange = (e) => {
     setForm({ ...formData, [e.target.id]: e.target.value });
     // console.log(formData);
@@ -32,7 +34,7 @@ export default function SignUp() {
       });
 
       console.log("Sent");
-      console.log(load);
+      // console.log(load);
       const data = await response.json();
       if (data.status === 500) {
         dispatch(signUpFailure(data));
@@ -40,6 +42,7 @@ export default function SignUp() {
       }
       if (data.status == 200) {
         dispatch(signUpSuccess(data));
+        navigate("/");
       }
     } catch (error) {
       // setLoading(false);

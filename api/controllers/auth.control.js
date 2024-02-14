@@ -38,7 +38,7 @@ const signin = async (req, res) => {
     }
 
     // seperating the password from the object
-    const { password: hashedPassword, ...rest } = validUser._doc;
+    const { password: hashedPasswornd, ...rest } = validUser._doc;
 
     // adding expiry time to the JWT token
     const expiryTime = new Date(Date.now() * 36);
@@ -50,16 +50,17 @@ const signin = async (req, res) => {
     res
       .cookie("jwt_token", token, { httpOnly: true, expiryTime: expiryTime })
       .status(200)
-      .json(rest);
+      .json({ message: "Logged-In!", status: 200, restData: rest });
   } catch (error) {
     console.log("Error");
-    res.status(500).json({ message: "Internal Sever Error!", status:500 });
+    res.status(500).json({ message: "Internal Sever Error!", status: 500 });
   }
 };
 
 const google = async (req, res, next) => {
   try {
-    const user = await User.findOne({ username: req.body.email });
+    const user = await User.findOne({ email: req.body.email });
+    console.log(user);
     if (user) {
       // creating the jwt token with unique id of mongodb _id created when user created account
       const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
@@ -69,12 +70,12 @@ const google = async (req, res, next) => {
 
       // adding expiry time to the JWT token
       const expiryTime = new Date(Date.now() * 3600000);
-
+      console.log("Google username exist");
       // jwt token stored in the browser cookie storage
       res
         .cookie("jwt_token", token, { httpOnly: true, expiryTime: expiryTime })
         .status(200)
-        .json(rest);
+        .json({ message: "Data exist!", status: 200, data: rest });
     } else {
       const generatedPassword =
         Math.random().toString(36).slice(-8) +
@@ -93,14 +94,21 @@ const google = async (req, res, next) => {
       const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
       const expiryTime = new Date(Date.now() * 3600000);
       const { password: hashedPassword2, ...rest } = newUser._doc;
+      console.log("Google username not exist");
       // jwt token stored in the browser cookie storage
       res
         .cookie("jwt_token", token, { httpOnly: true, expiryTime: expiryTime })
         .status(200)
-        .json(rest);
+        .json({
+          message: "Data Inserted through Google Auth!",
+          status: 200,
+          data: rest,
+        });
     }
   } catch (error) {
-    next(error);
+    // next(error);
+    console.log("Error");
+    res.status(500).json({ message: "Internal Sever Error!", status: 500 });
   }
 };
 

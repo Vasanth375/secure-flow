@@ -11,7 +11,7 @@ import Oauth from "../components/Oauth";
 
 export default function SignIn() {
   const [form, setForm] = useState([]);
-  const { loading, error } = useSelector((state) => state.user);
+  const { loading, error, currentUser } = useSelector((state) => state.user);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -44,8 +44,12 @@ export default function SignIn() {
         dispatch(signInFailure(data));
         return;
       }
-      dispatch(signInSuccess(data));
-      navigate("/");
+      if (data.status === 200) {
+        dispatch(signInSuccess(data));
+        navigate("/");
+      }
+      // console.log(loading, error);
+      // navigate("/");
     } catch (error) {
       dispatch(signInFailure(error));
     }
@@ -87,7 +91,11 @@ export default function SignIn() {
         </Link>
       </div>
       <p className="mt-2 text-red-900">
-        {error ? error.message || "Something Went Wrong!!" : ""}
+        {currentUser
+          ? currentUser.message != "Data Inserted through Google Auth!"
+            ? currentUser.message || "Something Went Wrong!!"
+            : ""
+          : ""}
       </p>
     </div>
   );

@@ -1,5 +1,4 @@
-/* eslint-disable no-undef */
-import React from "react";
+/* eslint-disable no-unused-vars */
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import app from "../firebase.js";
 import {
@@ -10,14 +9,15 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 export default function Oauth() {
   const dispatch = useDispatch();
+  const { loading, error, currentUser } = useSelector((state) => state.user);
   const handleSubmit = async () => {
     try {
+      dispatch(signInStart());
       const provider = new GoogleAuthProvider();
       const auth = getAuth(app);
-
       const result = await signInWithPopup(auth, provider);
-      console.log(result);
-      const res = await fetch("/api/auth/google", {
+
+      const response = await fetch("/api/auth/google", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -28,8 +28,13 @@ export default function Oauth() {
           photo: result.user.photoURL,
         }),
       });
-      
-      const data = await res.json();
+
+      const data = await response.json();
+      console.log(data);
+      if (data.status === 500) {
+        dispatch(signInFailure(data));
+        return;
+      }
       dispatch(signInSuccess(data));
     } catch (error) {
       console.log(error);
@@ -38,12 +43,17 @@ export default function Oauth() {
   };
 
   return (
-    <button
-      type="button"
-      className="p-2 text-gray-100 uppercase bg-red-600 rounded-md hover:bg-red-800 hover:text-gray-50"
-      onClick={handleSubmit}
-    >
-      Continue with google
-    </button>
+    <div className="max-w-lg p-3 mx-auto min-w-max">
+      <button
+        type="button"
+        className="p-2 text-gray-100 uppercase bg-red-600 rounded-md hover:bg-red-800 hover:text-gray-50"
+        onClick={handleSubmit}
+      >
+        Continue with google
+      </button>
+      {/* <p className="mt-2 text-red-900">
+        {currentUser ? currentUser.message || "Something Went Wrong!!" : ""}
+      </p> */}
+    </div>
   );
 }
