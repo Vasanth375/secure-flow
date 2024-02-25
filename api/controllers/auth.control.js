@@ -60,23 +60,24 @@ const signin = async (req, res) => {
 const google = async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.body.email });
-    console.log(user);
+    // console.log(user);
     if (user) {
       // creating the jwt token with unique id of mongodb _id created when user created account
-      const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+      console.log("Google username exist");
 
       // seperating the password from the object
       const { password: hashedPassword, ...rest } = user._doc;
 
       // adding expiry time to the JWT token
       const expiryTime = new Date(Date.now() * 3600000);
-      console.log("Google username exist");
       // jwt token stored in the browser cookie storage
       res
         .cookie("jwt_token", token, { httpOnly: true, expiryTime: expiryTime })
         .status(200)
-        .json({ message: "Data exist!", status: 200, data: rest });
+        .json({ message: "Successfully Logged In!", status: 200, data: rest });
     } else {
+      console.log("Google username not exist");
       const generatedPassword =
         Math.random().toString(36).slice(-8) +
         Math.random().toString(36).slice(-8);
@@ -94,13 +95,12 @@ const google = async (req, res, next) => {
       const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
       const expiryTime = new Date(Date.now() * 3600000);
       const { password: hashedPassword2, ...rest } = newUser._doc;
-      console.log("Google username not exist");
       // jwt token stored in the browser cookie storage
       res
         .cookie("jwt_token", token, { httpOnly: true, expiryTime: expiryTime })
         .status(200)
         .json({
-          message: "Data Inserted through Google Auth!",
+          message: "Successfully Logged In!",
           status: 200,
           data: rest,
         });

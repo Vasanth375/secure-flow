@@ -7,8 +7,11 @@ import {
   signInFailure,
 } from "../redux/User/userSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
 export default function Oauth() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { loading, error, currentUser } = useSelector((state) => state.user);
   const handleSubmit = async () => {
     try {
@@ -35,7 +38,10 @@ export default function Oauth() {
         dispatch(signInFailure(data));
         return;
       }
-      dispatch(signInSuccess(data));
+      if (data.status === 200) {
+        dispatch(signInSuccess(data));
+        navigate("/");
+      }
     } catch (error) {
       console.log(error);
       dispatch(signInFailure(error));
@@ -43,17 +49,12 @@ export default function Oauth() {
   };
 
   return (
-    <div className="max-w-lg p-3 mx-auto min-w-max">
-      <button
-        type="button"
-        className="p-2 text-gray-100 uppercase bg-red-600 rounded-md hover:bg-red-800 hover:text-gray-50"
-        onClick={handleSubmit}
-      >
-        Continue with google
-      </button>
-      {/* <p className="mt-2 text-red-900">
-        {currentUser ? currentUser.message || "Something Went Wrong!!" : ""}
-      </p> */}
-    </div>
+    <button
+      type="button"
+      className="p-2 text-gray-100 uppercase bg-red-600 rounded-md hover:bg-red-800 hover:text-gray-50"
+      onClick={handleSubmit}
+    >
+      {loading ? "Loading..." : "Continue with google"}
+    </button>
   );
 }

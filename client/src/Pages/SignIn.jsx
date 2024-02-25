@@ -81,7 +81,6 @@ export default function SignIn() {
         >
           {loading ? "Loading..." : "Sign in"}
         </button>
-
         <Oauth></Oauth>
       </form>
       <div className="flex gap-2 text-slate-50">
@@ -91,11 +90,7 @@ export default function SignIn() {
         </Link>
       </div>
       <p className="mt-2 text-red-900">
-        {currentUser
-          ? currentUser.message != "Data Inserted through Google Auth!"
-            ? currentUser.message || "Something Went Wrong!!"
-            : ""
-          : ""}
+        {currentUser ? currentUser.message || "Something Went Wrong!!" : ""}
       </p>
     </div>
   );
