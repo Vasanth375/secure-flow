@@ -19,7 +19,7 @@ mongoose
     console.log(err);
   });
 app.get("/", (req, res) => {
-  res.json({ data: "data" });
+  res.json({ data: "Home Page" });
 });
 
 const testRoute = require("./routes/test.route");

@@ -50,7 +50,7 @@ const signin = async (req, res) => {
     res
       .cookie("jwt_token", token, { httpOnly: true, expiryTime: expiryTime })
       .status(200)
-      .json({ message: "Logged-In!", status: 200, restData: rest });
+      .json({ message: "Logged-In!", status: 200, data: rest });
   } catch (error) {
     console.log("Error");
     res.status(500).json({ message: "Internal Sever Error!", status: 500 });
