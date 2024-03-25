@@ -7,22 +7,23 @@ export default function Header() {
   return (
     <div className="header">
       <div className="flex items-center justify-between p-3.5 mx-auto max-w-5xl gap-2">
-        <Link to={"/"}>
+        <Link id="logohome" to="/">
           <h1 className="font-semibold text-slate-900">MERN App</h1>
         </Link>
         <ul className="flex gap-8 font-mono text-slate-800">
-          <Link to={"/"}>
+          <Link id="home" to={"/"}>
             <li>Home</li>
           </Link>
-          <Link to={"/profile"}>
-            {currentUser ? (
+          <Link id="profile" to={"/profile"}>
+            {currentUser ? 
+            (
               <div className="flex gap-8">
                 <img
                   src={currentUser.data.profilePic}
                   alt="profile-pic"
                   className="object-cover rounded-full h-7 w-7"
                 ></img>
-                <Link to={"/"}>
+                <Link id="out" to={"/"}>
                   <li>Sign Out</li>
                 </Link>
               </div>
