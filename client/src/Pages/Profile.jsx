@@ -17,7 +17,7 @@ export default function Profile() {
   const [imagePercent, setImagePercent] = useState(0);
   const [imageError, setImageError] = useState(false);
   const [formData, setForm] = useState({});
-  // console.log(formData);
+  console.log(formData);
   useEffect(() => {
     if (image) {
       handleImageUpload(image);
@@ -43,6 +43,7 @@ export default function Profile() {
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setForm({ ...formData, profilePicture: downloadURL });
+          setImageError(false);
           console.log(downloadURL);
         });
       }
@@ -59,13 +60,12 @@ export default function Profile() {
           accept="image/*"
           ref={fileRef}
           onChange={(e) => {
-            
             setImage(e.target.files[0]);
           }}
           hidden
         />
         <img
-          src={currentUser.data.profilePic}
+          src={formData.profilePicture || currentUser.data.profilePic}
           alt="profile-pic"
           onClick={() => fileRef.current.click()}
           className="self-center object-cover w-24 h-24 mx-6 border-2 rounded-full cursor-pointer hover:border-y-stone-500"
