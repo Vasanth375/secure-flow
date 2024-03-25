@@ -3,11 +3,15 @@ const bodyParser = require("body-parser"); // To parse JSON data in the request 
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
-dotenv.config();
-
+const cookieparser = require("cookie-parser");
 const app = express();
+const testRoute = require("./routes/user.route.js");
+const authRoutes = require("./routes/auth.route.js");
+
+dotenv.config();
 app.use(bodyParser.json());
 app.use(cors());
+app.use(cookieparser());
 const URI = process.env.MONGO;
 // console.log(URI);
 mongoose
@@ -22,8 +26,6 @@ app.get("/", (req, res) => {
   res.json({ data: "Home Page" });
 });
 
-const testRoute = require("./routes/test.route");
-const authRoutes = require("./routes/auth.route");
 app.use("/api/user", testRoute);
 app.use("/api/auth", authRoutes);
 
