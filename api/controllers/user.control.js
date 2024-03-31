@@ -7,7 +7,8 @@ const test = (req, res) => {
   });
 };
 const updateUser = async (req, res) => {
-  console.log(req.user);
+  console.log(req.user.id);
+  console.log(req.params.id);
   if (req.user.id !== req.params.id) {
     return res.status(401).json({
       message: "Login failed You've tryed to login using different ID",
@@ -18,7 +19,7 @@ const updateUser = async (req, res) => {
     if (req.body.password) {
       req.body.password = bcrypt.hashSync(req.body.password, 12);
     }
-    console.log(req.body);
+    // console.log(req.body);
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
       {
@@ -32,9 +33,11 @@ const updateUser = async (req, res) => {
       { new: true }
     );
     const { password, ...restData } = updatedUser._doc;
-    res.status(200).json({ message: restData, status: 200 });
+    res
+      .status(200)
+      .json({ message: "Updated Successfully!", data: restData, status: 200 });
   } catch (error) {
-    res.status(500).json("ERROR!!");
+    res.status(500).json({ message: "Error Occured!", status: 500 });
   }
 };
 

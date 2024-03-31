@@ -1,8 +1,15 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import "../App.css";
-import { useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
+
+import { useSelector, useDispatch } from "react-redux";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../redux/User/userSlice.js";
+
 import {
   getDownloadURL,
   getStorage,
@@ -10,6 +17,7 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import app from "../firebase.js";
+
 export default function Profile() {
   const { currentUser } = useSelector((state) => state.user);
   const fileRef = useRef(null);
@@ -17,12 +25,46 @@ export default function Profile() {
   const [imagePercent, setImagePercent] = useState(0);
   const [imageError, setImageError] = useState(false);
   const [formData, setForm] = useState({});
-  console.log(formData);
+  const { loading, state, error } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
+  // console.log(formData);
+  // console.log(currentUser);
   useEffect(() => {
     if (image) {
       handleImageUpload(image);
     }
   }, [image]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // console.log(currentUser);
+      dispatch(signInStart());
+      const res = await fetch(`/api/user/update/${currentUser.data._id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+
+      if (data.status === 200) {
+        // console.log("data updated");
+        dispatch(signInSuccess(data));
+        return;
+      }
+      if (data.status === 500) {
+        // console.log("Failed");
+        dispatch(signInFailure(data));
+        return;
+      }
+    } catch (error) {
+      // console.log("error");
+      dispatch(signInFailure(error));
+    }
+  };
 
   const handleImageUpload = async (image) => {
     const storage = getStorage(app);
@@ -44,7 +86,7 @@ export default function Profile() {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setForm({ ...formData, profilePicture: downloadURL });
           setImageError(false);
-          console.log(downloadURL);
+          // console.log(downloadURL);
         });
       }
     );
@@ -87,16 +129,22 @@ export default function Profile() {
           type="text"
           name="username"
           id="uname"
-          placeholder="Username"
-          value={currentUser.data.username}
+          placeholder={currentUser.data.username}
+          onChange={(e) => {
+            setForm({ ...formData, username: e.target.value });
+            // console.log(e.target.value);
+          }}
           className="self-center p-2 border-2 w-72 rounded-xl bg-slate-200 hover:border-slate-500"
         />
         <input
           type="email"
           name="email"
           id="email"
-          placeholder="Email"
-          value={currentUser.data.email}
+          placeholder={currentUser.data.email}
+          onChange={(e) => {
+            setForm({ ...formData, email: e.target.value });
+            // console.log(e.target.value);
+          }}
           className="self-center p-2 border-2 w-72 rounded-xl bg-slate-200 hover:border-slate-500"
         />
         <input
@@ -104,10 +152,17 @@ export default function Profile() {
           name="pass"
           id="pass"
           placeholder="password"
+          onChange={(e) => {
+            setForm({ ...formData, password: e.target.value });
+            // console.log(e.target.value);
+          }}
           className="self-center p-2 border-2 w-72 rounded-xl bg-slate-200 hover:border-slate-500"
         />
-        <button className="self-center p-3 text-white uppercase rounded-xl w-72 bg-slate-700 hover:bg-slate-800">
-          Update
+        <button
+          className="self-center p-3 text-white uppercase rounded-xl w-72 bg-slate-700 hover:bg-slate-800"
+          onClick={handleSubmit}
+        >
+          {loading ? "Updating..." : "Update"}
         </button>
       </form>
       <div className="flex justify-between mt-5">

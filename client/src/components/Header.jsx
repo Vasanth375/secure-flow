@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
-  // console.log(currentUser);
+  console.log(currentUser);
 
   return (
     <div className="header">
@@ -15,8 +15,7 @@ export default function Header() {
             <li>Home</li>
           </Link>
           <Link id="profile" to={"/profile"}>
-            {currentUser ? 
-            (
+            {currentUser ? (
               <div className="flex gap-8">
                 <img
                   src={currentUser.data.profilePic}
