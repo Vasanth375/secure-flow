@@ -13,13 +13,11 @@ const signup = async (req, res) => {
   try {
     console.log("User Inserted!");
     await newUser.save();
-    res
-      .status(200)
-      .json({
-        message: "Successfully Account Created!",
-        data: newUser,
-        status: 200,
-      });
+    res.status(200).json({
+      message: "Successfully Account Created!",
+      data: newUser,
+      status: 200,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Already Account Created!", status: 500 });
@@ -116,4 +114,12 @@ const google = async (req, res, next) => {
   }
 };
 
-module.exports = { signup, signin, google };
+const signoutUser = async (req, res) => {
+  try {
+    res.clearCookie("jwt_token").status(200).json("Signout Success!!");
+  } catch (error) {
+    console.log("error", error);
+  }
+};
+
+module.exports = { signup, signin, google, signoutUser };
