@@ -8,6 +8,9 @@ import {
   signInStart,
   signInSuccess,
   signInFailure,
+  deleteStart,
+  deleteSuccess,
+  deleteFailure,
 } from "../redux/User/userSlice.js";
 
 import {
@@ -19,13 +22,13 @@ import {
 import app from "../firebase.js";
 
 export default function Profile() {
-  const { currentUser } = useSelector((state) => state.user);
   const fileRef = useRef(null);
   const [image, setImage] = useState(undefined);
   const [imagePercent, setImagePercent] = useState(0);
   const [imageError, setImageError] = useState(false);
   const [formData, setForm] = useState({});
-  const { loading, state, error } = useSelector((state) => state.user);
+  const [updateSuccess, setUpdateSucc] = useState(false);
+  const { loading, currentUser, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   // console.log(formData);
@@ -53,6 +56,7 @@ export default function Profile() {
       if (data.status === 200) {
         // console.log("data updated");
         dispatch(signInSuccess(data));
+        setUpdateSucc(true);
         return;
       }
       if (data.status === 500) {
@@ -63,6 +67,31 @@ export default function Profile() {
     } catch (error) {
       // console.log("error");
       dispatch(signInFailure(error));
+    }
+  };
+
+  const handleDeleteAccount = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(deleteStart());
+      const result = await fetch(`/api/user/delete/${currentUser.data._id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await result.json();
+      if (data.status === 200) {
+        dispatch(deleteSuccess());
+        return;
+      }
+      if (data.status === 500) {
+        // console.log("Failed");
+        dispatch(deleteFailure(data));
+        return;
+      }
+    } catch (error) {
+      dispatch(deleteFailure(error));
     }
   };
 
@@ -164,9 +193,18 @@ export default function Profile() {
         >
           {loading ? "Updating..." : "Update"}
         </button>
+        <p className="self-center text-red-600">
+          {error && "Something Went Wrong!!"}
+        </p>
+        <p className="self-center text-red-600">
+          {updateSuccess && "Successfully Updated"}
+        </p>
       </form>
       <div className="flex justify-between mt-5">
-        <span className="p-1 border-2 rounded-md cursor-pointer text-slate-200 hover:text-black hover:border-0">
+        <span
+          className="p-1 border-2 rounded-md cursor-pointer text-slate-200 hover:text-black hover:border-0"
+          onClick={handleDeleteAccount}
+        >
           Delete Account
         </span>
         <span className="p-1 border-2 rounded-md cursor-pointer text-slate-200 hover:text-black hover:border-0">

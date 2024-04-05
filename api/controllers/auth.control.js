@@ -15,7 +15,11 @@ const signup = async (req, res) => {
     await newUser.save();
     res
       .status(200)
-      .json({ message: "Successfully Account Created!", status: 200 });
+      .json({
+        message: "Successfully Account Created!",
+        data: newUser,
+        status: 200,
+      });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Already Account Created!", status: 500 });

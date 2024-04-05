@@ -7,8 +7,8 @@ const test = (req, res) => {
   });
 };
 const updateUser = async (req, res) => {
-  console.log(req.user.id);
-  console.log(req.params.id);
+  // console.log(req.user.id);
+  // console.log(req.params.id);
   if (req.user.id !== req.params.id) {
     return res.status(401).json({
       message: "Login failed You've tryed to login using different ID",
@@ -41,4 +41,23 @@ const updateUser = async (req, res) => {
   }
 };
 
-module.exports = { test, updateUser };
+const deleteUser = async (req, res) => {
+  if (req.user.id !== req.params.id) {
+    return res.status(401).json({
+      message: "Login failed You've tryed to login using different ID",
+      status: 401,
+    });
+  }
+  try {
+    const deleteUser = await User.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({
+      message: "User Deleted Successfully",
+      status: 200,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error Occured!", status: 500 });
+  }
+};
+
+module.exports = { test, updateUser, deleteUser };
