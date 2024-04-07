@@ -7,6 +7,13 @@ const cookieparser = require("cookie-parser");
 const app = express();
 const testRoute = require("./routes/user.route.js");
 const authRoutes = require("./routes/auth.route.js");
+const path = require("path");
+const __dirname = path.resolve();
+
+app.use(express.static(path.join(__dirname, '/client/dist')))
+app.get("*", (req,res) => {
+  res.sendFile(path.join(__dirname, "client", "dist", "index.html"))
+})
 
 dotenv.config();
 app.use(bodyParser.json());

@@ -209,7 +209,7 @@ export default function Profile() {
         <p className="self-center text-red-600">
           {error && "Something Went Wrong!!"}
         </p>
-        <p className="self-center text-red-600">
+        <p className="self-center text-red-200">
           {updateSuccess && "Successfully Updated"}
         </p>
       </form>
