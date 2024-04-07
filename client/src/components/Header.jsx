@@ -1,8 +1,22 @@
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { signout } from "../redux/User/userSlice";
+
 export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
-  console.log(currentUser);
+  const dispatch = useDispatch();
+  // console.log(currentUser);
+  const handleSignout = async () => {
+    try {
+      await fetch("/api/auth/signout", {
+        method: "GET",
+      });
+      // console.log(result);
+      dispatch(signout());
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="header">
@@ -22,7 +36,7 @@ export default function Header() {
                   alt="profile-pic"
                   className="object-cover rounded-full h-7 w-7"
                 ></img>
-                <Link id="out" to={"/"}>
+                <Link id="out" to={"/"} onClick={handleSignout}>
                   <li>Sign Out</li>
                 </Link>
               </div>

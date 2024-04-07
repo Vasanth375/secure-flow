@@ -101,7 +101,7 @@ export default function Profile() {
       const result = await fetch("/api/auth/signout", {
         method: "GET",
       });
-      console.log(result);
+      // console.log(result);
       dispatch(signout());
     } catch (error) {
       console.log(error);

@@ -12,15 +12,23 @@ import Oauth from "../components/Oauth";
 export default function SignIn() {
   const [form, setForm] = useState([]);
   const { loading, error, currentUser } = useSelector((state) => state.user);
-
+  const [status, setStatus] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleChange = (e) => {
     setForm({ ...form, [e.target.id]: e.target.value });
+    console.log(form);
+    setStatus(false);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!form.username || !form.password) {
+      // If any field is missing, display an error and return early
+      // console.log("Please fill in all fields");
+      setStatus(true);
+      return;
+    }
     try {
       dispatch(signInStart());
       const resp = await fetch("/api/auth/signin", {
@@ -59,12 +67,13 @@ export default function SignIn() {
       <div className="font-mono text-3xl text-center my-7 text-slate-900">
         SignIn
       </div>
-      <form action="" className="flex flex-col gap-4">
+      <form action="" className="flex flex-col gap-4 mb-4">
         <input
           id="username"
           placeholder="Username"
           className="justify-center p-2 rounded-r-md bg-slate-100"
           onChange={handleChange}
+          required
         ></input>
         <input
           id="password"
@@ -72,6 +81,7 @@ export default function SignIn() {
           type="password"
           onChange={handleChange}
           className="justify-center p-2 rounded-r-md bg-slate-100"
+          required
         ></input>
         <button
           type="submit"
@@ -84,13 +94,19 @@ export default function SignIn() {
         <Oauth></Oauth>
       </form>
       <div className="flex gap-2 text-slate-50">
-        <p>Already have an Account</p>
+        <p>Didn&apos;t have an Account</p>
         <Link to={"/signup"}>
-          <span className="text-cyan-700">signup</span>
+          <span className="text-blue-700 underline hover:text-white">
+            SignUp
+          </span>
         </Link>
       </div>
       <p className="mt-2 text-red-900">
-        {currentUser ? currentUser.message || "Something Went Wrong!!" : ""}
+        {currentUser
+          ? currentUser.messsage || "Something Went Wrong!!"
+          : status
+          ? "Something Went Wrong!!"
+          : error.message || ""}
       </p>
     </div>
   );

@@ -10,18 +10,26 @@ import {
 } from "../redux/User/userSlice";
 export default function SignUp() {
   const [formData, setForm] = useState([]);
-  
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
   const { loading, error, currentUser } = useSelector((state) => state.user);
-  
+  const [status, setStatus] = useState(false);
+
   const handleChange = (e) => {
     setForm({ ...formData, [e.target.id]: e.target.value });
+    setStatus(false);
     // console.log(formData);
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.username || !formData.email || !formData.password) {
+      // If any field is missing, display an error and return early
+      // console.log("Please fill in all fields");
+      setStatus(true);
+      return;
+    }
     try {
       // setLoading(true);
       dispatch(signUpStart());
@@ -36,7 +44,7 @@ export default function SignUp() {
       console.log("Sent");
       // console.log(load);
       const data = await response.json();
-      if (data.status === 500) {
+      if (data.status === 500 || data.status === 404 || data.status === 401) {
         dispatch(signUpFailure(data));
         return;
       }
@@ -53,13 +61,13 @@ export default function SignUp() {
   return (
     <div className="max-w-lg p-3 mx-auto min-w-max">
       <div className="font-mono text-3xl text-center my-7">SignUp</div>
-      <form className="flex flex-col gap-4">
+      <form action="" className="flex flex-col gap-4">
         <input
           className="justify-center p-2 rounded-md bg-slate-100"
           placeholder="Username"
           id="username"
           onChange={handleChange}
-          required
+          aria-required
         ></input>
         <input
           className="p-2 rounded-md bg-slate-100"
@@ -90,13 +98,19 @@ export default function SignUp() {
         <Oauth></Oauth>
       </div>
       <div className="flex gap-2 text-slate-100">
-        <p>Have an account?</p>
+        <p>Already have an account?</p>
         <Link to={"/signin"}>
-          <span className="text-cyan-300 hover:text-white">signin</span>
+          <span className="text-blue-700 underline hover:text-white">
+            SignIn
+          </span>
         </Link>
       </div>
       <p className="mt-2 text-red-900">
-        {currentUser ? currentUser.message || "Something Went Wrong!!" : ""}
+        {currentUser
+          ? currentUser.message || "Something Went Wrong!!"
+          : status
+          ? "Something Went Wrong!!"
+          : ""}
       </p>
     </div>
   );
