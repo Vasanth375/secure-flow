@@ -3,7 +3,7 @@ import "../App.css";
 export default function Home() {
   return (
     <div className="max-w-4xl m-10 mx-auto border-2 bg-inherit border-slate-400 rounded-xl hover:border-slate-50">
-      <div className="mx-auto font-mono text-center cursor-pointer ">
+      <div className="mx-auto font-mono text-center">
         <div className="m-10 text-2xl font-bold border-white">
           Welcome to our MERN-based authentication website!
         </div>
