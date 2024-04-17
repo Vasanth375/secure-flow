@@ -14,16 +14,16 @@ Secureflow Authentication is a full-stack web application built with the MERN st
 
 ## Installation
 
-1. Clone the repository: `git clone <repository-url>`
-2. Navigate to the project directory: `cd secureflow-authentication`
+1. Clone the repository: `git clone https://github.com/Vasanth375/secure-flow.git`
+2. Navigate to the project directory: `cd secure-flow`
 3. Install dependencies for both frontend and backend:
    - Frontend: `cd client && npm install`
-   - Backend: `cd server && npm install`
+   - Backend: `npm install`
 4. Set up environment variables:
    - Create a `.env` file in the server directory and define variables for MongoDB connection, JWT secret, Firebase configuration, etc.
 5. Start the development server:
-   - Frontend: `cd client && npm start`
-   - Backend: `cd server && npm start`
+   - Frontend: `cd client && npm run dev`
+   - Backend: `npm run start`
 
 ## Deployment
 
@@ -35,7 +35,6 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Contributors
 
-- [Your Name](https://github.com/your-username)
-- [Contributor 2](https://github.com/contributor2)
+- [Vasanth375](https://github.com/Vasanth375/)
 
 Feel free to contribute by submitting bug reports, feature requests, or pull requests. Contributions are welcomed and appreciated!
