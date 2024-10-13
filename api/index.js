@@ -30,7 +30,7 @@ mongoose
   });
 
 // Serve static files from React frontend
-app.use(express.static(path.join(__mydirname, "/client/build")));
+app.use(express.static(path.join(__mydirname, "/client/dist")));
 
 // API Routes
 app.get("/", (req, res) => {
@@ -46,9 +46,9 @@ app.use("/api/auth", authRoutes);
 
 // For any other routes, serve the React app
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__mydirname, "client", "build", "index.html"));
+  res.sendFile(path.join(__mydirname, "client", "dist", "index.html"));
 });
-
+// 
 // Start the server
 app.listen(5000, () => {
   console.log("Server running on port 5000");
