@@ -1,11 +1,7 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/user.model");
 
-const test = (req, res) => {
-  res.json({
-    message: "API working",
-  });
-};
+
 const updateUser = async (req, res) => {
   // console.log(req.user.id);
   // console.log(req.params.id);
@@ -60,4 +56,4 @@ const deleteUser = async (req, res) => {
   }
 };
 
-module.exports = { test, updateUser, deleteUser };
+module.exports = {  updateUser, deleteUser };

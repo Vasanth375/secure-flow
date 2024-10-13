@@ -10,10 +10,10 @@ const authRoutes = require("./routes/auth.route.js");
 const path = require("path");
 const __mydirname = path.resolve();
 
-app.use(express.static(path.join(__mydirname, '/client/dist')))
-app.get("*", (req,res) => {
-  res.sendFile(path.join(__mydirname, "client", "dist", "index.html"))
-})
+app.use(express.static(path.join(__mydirname, "/client")));
+// app.get("*", (req,res) => {
+//   res.sendFile(path.join(__mydirname, "client", "index.html"))
+// })
 
 dotenv.config();
 app.use(bodyParser.json());
@@ -31,6 +31,10 @@ mongoose
   });
 app.get("/", (req, res) => {
   res.json({ data: "Home Page" });
+});
+
+app.get("/test", (req, res) => {
+  res.json({ message: "Test working" });
 });
 
 app.use("/api/user", testRoute);

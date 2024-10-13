@@ -10,6 +10,7 @@ export default function Header() {
     try {
       await fetch("/api/auth/signout", {
         method: "GET",
+        credentials: 'same-origin'
       });
       // console.log(result);
       dispatch(signout());
